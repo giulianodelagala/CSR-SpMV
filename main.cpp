@@ -135,17 +135,16 @@ int main(int argc, char** argv)
 	
 	//Crear evento para toma de tiempo
 	
-	//cl_event event;
+	cl_event event;
 	
-	auto inicio = high_resolution_clock::now();
+	
 	
 	ret = clEnqueueNDRangeKernel(command_queue, kernel, 1, NULL,
 		&global_item_size, &local_item_size, 0, NULL, nullptr);
 	
-	auto final = high_resolution_clock::now();
-	auto duration_cl = duration_cast<microseconds>(final - inicio);
 	
-	//clWaitForEvents(1, &event);
+	
+	clWaitForEvents(1, &event);
 
 	// Copiar resultado a host
 	float* result_from_device = (float*)malloc(sizeof(float) * m);
@@ -182,14 +181,14 @@ int main(int argc, char** argv)
 	cout << "\nTiempo de Ejecucion en GPU = " << duration_cl.count() << " ms";
 
 
-	//ret = clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &time_start, NULL);
-	//ret = clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &time_end, NULL);
+	ret = clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &time_start, NULL);
+	ret = clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &time_end, NULL);
 
-	//double nanoSeconds = time_end - time_start;
+	double nanoSeconds = time_end - time_start;
 	//printf("OpenCl Execution time is: %0.3f milliseconds \n", nanoSeconds / 1000000.0);
-	//std::chrono::nanoseconds ss(time_end - time_start);
+	std::chrono::nanoseconds ss(time_end - time_start);
 
-	//cout << "Tiempo" << ss.count();
+	cout << "Tiempo" << ss.count();
 
 	return 0;
 }
